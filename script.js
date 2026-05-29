@@ -58,6 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
     '.host-text p',
     '.host-image',
     '.btn-host',
+    '.video-title',
+    '.video-wrapper',
+    '.video-section .btn-primary',
+    '.testimonials-title',
+    '.testimonial-card',
+    '.faq-title',
+    '.faq-item',
     '.final-title',
     '.final-subtitle',
     '.final-cta-section .btn-primary'
@@ -104,6 +111,51 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.audience-card').forEach((card, i) => {
     card.style.transitionDelay = `${i * 0.15}s`;
   });
+
+  // --- STAGGER TESTIMONIAL CARDS ---
+  document.querySelectorAll('.testimonial-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 0.12}s`;
+  });
+
+  // --- FAQ ACCORDION ---
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const question = item.querySelector('.faq-question');
+    const answer = item.querySelector('.faq-answer');
+    question.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(other => {
+        if (other !== item) {
+          other.classList.remove('open');
+          other.querySelector('.faq-answer').style.maxHeight = null;
+        }
+      });
+      if (isOpen) {
+        item.classList.remove('open');
+        answer.style.maxHeight = null;
+      } else {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // --- VSL VIDEO: swap placeholder for embed when data-video-src is set ---
+  const vsl = document.getElementById('vslVideo');
+  if (vsl) {
+    const src = vsl.dataset.videoSrc;
+    const playBtn = vsl.querySelector('.video-play');
+    if (src) {
+      vsl.querySelector('.video-placeholder-note')?.remove();
+      const playVideo = () => {
+        const sep = src.includes('?') ? '&' : '?';
+        vsl.innerHTML = '<iframe src="' + src + sep + 'autoplay=1" title="THE ASK" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+      };
+      playBtn.addEventListener('click', playVideo);
+      vsl.addEventListener('click', (e) => {
+        if (e.target !== playBtn) playVideo();
+      });
+    }
+  }
 
   // --- NAVBAR OPACITY ON SCROLL ---
   const nav = document.querySelector('.top-nav');
